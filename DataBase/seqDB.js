@@ -10,6 +10,7 @@ const sequelize = new Sequelize(
     dialect: process.env.DB_DIALECT,
     port: process.env.DB_PORT,
     logging: false,
+    
   }
 );
 // Connect to PostgreSQL
