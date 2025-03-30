@@ -50,7 +50,7 @@ app.use("/api/books/transaction", bookTransaction);
 const startServer = async () => {
     try {
       await connectDB();
-      await sequelize.sync({ alter: true, force: false }); 
+      await sequelize.sync({  force: true }); 
       console.log("Database tables synced!");
   
       app.listen(PORT, () => {
