@@ -2,8 +2,7 @@ const express = require("express");
 const router = express.Router();
 const studentController = require("../Controllers/studentController");
 const { excelUpload } = require("../multerconfig/Storageconfig");
-const { protect, authorizeRoles } = require("../middleware/AuthMiddleware");
-
+//  
 // Fetch all students
 router.get(
   "/students",studentController.getAllStudents

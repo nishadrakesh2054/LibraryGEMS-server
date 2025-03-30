@@ -25,8 +25,8 @@ app.use(express.json());
 app.use("/uploads", express.static("uploads/"));
 
 // user routes defined
-const authrouter = require("./Routes/authRoutes");
-app.use("/api", authrouter);
+// const authrouter = require("./Routes/authRoutes");
+// app.use("/api", authrouter);
 
 // students  routes defined
 const studentRoutes = require("./Routes/studentRoutes");
