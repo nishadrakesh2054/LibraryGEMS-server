@@ -8,6 +8,9 @@ const bp = require("body-parser");
 const PORT = process.env.PORT || 5000;
 const { sequelize, connectDB } = require("./DataBase/seqDB");
 
+const {  Student, Book, BookTransaction } = require("./Models"); 
+
+
 // middleware
 app.use(morgan("dev"));
 app.use(errorHandler);
@@ -50,7 +53,7 @@ app.use("/api/books/transaction", bookTransaction);
 const startServer = async () => {
     try {
       await connectDB();
-      await sequelize.sync({  force: true }); 
+      await sequelize.sync({  alter: true }); 
       console.log("Database tables synced!");
   
       app.listen(PORT, () => {
