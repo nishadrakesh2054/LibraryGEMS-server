@@ -8,9 +8,6 @@ const bp = require("body-parser");
 const PORT = process.env.PORT || 5000;
 const { sequelize, connectDB } = require("./DataBase/seqDB");
 
-const {  Student, Book, BookTransaction } = require("./Models"); 
-
-
 // middleware
 app.use(morgan("dev"));
 app.use(errorHandler);
@@ -39,29 +36,23 @@ app.use("/api", studentRoutes);
 const bookRoutes = require("./Routes/bookRoute");
 app.use("/api/books", bookRoutes);
 
-
-
 // books  routes defined
 const bookTransaction = require("./Routes/bookTransactionRoute");
 app.use("/api/books/transaction", bookTransaction);
 
-
-
-
-
 // Connect to Database & Start Server
 const startServer = async () => {
-    try {
-      await connectDB();
-      await sequelize.sync({  alter: true }); 
-      console.log("Database tables synced!");
-  
-      app.listen(PORT, () => {
-        console.log(`Server listening on ${PORT}`);
-      });
-    } catch (error) {
-      console.error("Error starting server:", error);
-    }
-  };
-  
-  startServer();
+  try {
+    await connectDB();
+    await sequelize.sync({ force:false });
+    console.log("Database tables synced!");
+
+    app.listen(PORT, () => {
+      console.log(`Server listening on ${PORT}`);
+    });
+  } catch (error) {
+    console.error("Error starting server:", error);
+  }
+};
+
+startServer();

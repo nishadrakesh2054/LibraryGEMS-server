@@ -216,7 +216,6 @@ const Book = require("../Models/bookModel");
 const Joi = require("joi");
 
 const bookValidationSchema = Joi.object({
-  date: Joi.date().required(),
   title: Joi.string().trim().required(),
   subtitle: Joi.array().items(Joi.string().trim()).min(1).required(),
   accessionNumber: Joi.number().required(),

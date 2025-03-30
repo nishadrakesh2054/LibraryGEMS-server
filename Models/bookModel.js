@@ -125,10 +125,7 @@ const Book = sequelize.define(
       primaryKey: true,
       autoIncrement: true,
     },
-    date: {
-      type: DataTypes.DATE,
-      allowNull: true,
-    },
+   
     title: {
       type: DataTypes.STRING,
       allowNull: false,
