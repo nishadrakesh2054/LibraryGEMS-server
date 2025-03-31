@@ -11,37 +11,79 @@ const BookTransaction = sequelize.define(
         model: "Students",
         key: "id",
       },
+      onDelete: "RESTRICT",
     },
     bookId: {
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
-        model: "Books",
+        model: "Testbooks",
         key: "id",
       },
+      onDelete: "RESTRICT",
     },
     issueDate: {
-      type: DataTypes.DATE,
+      type: DataTypes.DATEONLY,
       defaultValue: DataTypes.NOW,
+      validate: {
+        isDate: true,
+      },
     },
     dueDate: {
-      type: DataTypes.DATE,
+      type: DataTypes.DATEONLY,
       allowNull: false,
+      validate: {
+        isDate: true,
+      },
     },
     returnDate: {
-      type: DataTypes.DATE,
+      type: DataTypes.DATEONLY,
+      validate: {
+        isDate: true,
+        isAfterIssueDate(value) {
+          if (
+            value &&
+            this.issueDate &&
+            new Date(value) < new Date(this.issueDate)
+          ) {
+            throw new Error("Return date cannot be before issue date");
+          }
+        },
+      },
     },
     isReturned: {
       type: DataTypes.BOOLEAN,
       defaultValue: false,
     },
     lateFee: {
-      type: DataTypes.FLOAT,
-      defaultValue: 0,
+      type: DataTypes.DECIMAL(10, 2),
+      defaultValue: 0.0,
+      validate: {
+        min: 0,
+      },
+    },
+    status: {
+      type: DataTypes.ENUM("issued", "returned", "overdue", "lost"),
+      defaultValue: "issued",
     },
   },
   {
-    timestamps: false,
+    timestamps: true,
+    paranoid: true, // Enable soft deletion
+    indexes: [
+      {
+        fields: ["studentId"],
+      },
+      {
+        fields: ["bookId"],
+      },
+      {
+        fields: ["isReturned"],
+      },
+      {
+        fields: ["status"],
+      },
+    ],
   }
 );
 
