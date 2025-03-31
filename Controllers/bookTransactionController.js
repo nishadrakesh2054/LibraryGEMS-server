@@ -137,7 +137,6 @@ const returnBook = asyncHandler(async (req, res) => {
 });
 
 // Get all books transactions for a specific student
-
 const getStudentTransactions = asyncHandler(async (req, res) => {
   const { studentId } = req.params;
   const { showReturned } = req.query;
