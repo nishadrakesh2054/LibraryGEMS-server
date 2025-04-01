@@ -68,16 +68,13 @@ router.post("/return", returnBook);
 // Get all active transactions
 router.get("/active", getActiveTransactions);
 
-// Get overdue transactions
-router.get("/overdue", getOverdueTransactions);
-
 //Get getStudentTransactions for a specific student
 router.get("/student/:studentId", getStudentTransactions);
 
-
+// Get overdue transactions
+router.get("/overdue", getOverdueTransactions);
 
 // Get transaction details by ID
 router.get("/:transactionId", getTransactionById);
-
 
 module.exports = router;

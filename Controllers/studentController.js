@@ -2,13 +2,41 @@ const Student = require("../Models/Students");
 const xlsx = require("xlsx");
 const fs = require("fs");
 const path = require("path");
+const { Op } = require("sequelize");
 // Fetch all students
+// const getAllStudents = async (req, res) => {
+//   try {
+//     const students = await Student.findAll();
+//     res.status(200).json({
+//       Total_students: students.length,
+//       message: "student found successfuly",
+//       students,
+//     });
+//   } catch (error) {
+//     res.status(500).json({ message: "Error fetching students", error });
+//   }
+// };
 const getAllStudents = async (req, res) => {
   try {
-    const students = await Student.findAll();
+    const { search } = req.query; // Get search keyword from query params
+
+    let whereCondition = {};
+
+    if (search) {
+      whereCondition = {
+        [Op.or]: [
+          { name: { [Op.iLike]: `%${search}%` } },
+          { rollNo: { [Op.iLike]: `%${search}%` } },
+          { email: { [Op.iLike]: `%${search}%` } },
+        ],
+      };
+    }
+
+    const students = await Student.findAll({ where: whereCondition });
+
     res.status(200).json({
       Total_students: students.length,
-      message: "student found successfuly",
+      message: "Students retrieved successfully",
       students,
     });
   } catch (error) {

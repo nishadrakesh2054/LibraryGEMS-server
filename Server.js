@@ -38,7 +38,7 @@ app.use("/api/books", bookRoutes);
 
 // books  routes defined
 const bookTransaction = require("./Routes/bookTransactionRoute");
-app.use("/api/books/transaction", bookTransaction);
+app.use("/api/bookscirculation", bookTransaction);
 
 // Connect to Database & Start Server
 const startServer = async () => {

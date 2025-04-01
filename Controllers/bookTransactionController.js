@@ -6,7 +6,6 @@ const { sequelize } = require("../DataBase/seqDB");
 // Constants
 
 // Issue a book to a student
-
 const issueBook = asyncHandler(async (req, res) => {
   const { studentId, bookId, dueDate } = req.body;
 
@@ -185,6 +184,41 @@ const getStudentTransactions = asyncHandler(async (req, res) => {
     });
   }
 });
+// Get all active transactions (books not returned)
+const getActiveTransactions = asyncHandler(async (req, res) => {
+    const { status } = req.query;
+  
+    // Build the where clause
+    const whereClause = {
+      status: status
+        ? Array.isArray(status)
+          ? { [Op.in]: status }
+          : status
+        : { [Op.in]: ["issued", "overdue"] },
+      isReturned: false,
+    };
+  
+    const transactions = await BookTransaction.findAll({
+      where: whereClause,
+      include: [
+        {
+          model: Student,
+          attributes: ["id", "name", "email", "rollNo", "grade"],
+        },
+        {
+          model: Book,
+          attributes: ["id", "title", "accessionNumber", "isbnNo"],
+        },
+      ],
+      order: [["dueDate", "ASC"]], // Sort by due date (earliest first)
+    });
+  
+    res.status(200).json({
+      success: true,
+      count: transactions.length,
+      transactions,
+    });
+  });
 
 // Get transaction details by ID
 const getTransactionById = asyncHandler(async (req, res) => {
@@ -209,41 +243,7 @@ const getTransactionById = asyncHandler(async (req, res) => {
   res.status(200).json({ success: true, transaction });
 });
 
-// Get all active transactions (books not returned)
-const getActiveTransactions = asyncHandler(async (req, res) => {
-  const { status } = req.query;
 
-  // Build the where clause
-  const whereClause = {
-    status: status
-      ? Array.isArray(status)
-        ? { [Op.in]: status }
-        : status
-      : { [Op.in]: ["issued", "overdue"] },
-    isReturned: false,
-  };
-
-  const transactions = await BookTransaction.findAll({
-    where: whereClause,
-    include: [
-      {
-        model: Student,
-        attributes: ["id", "name", "email", "rollNo", "grade"],
-      },
-      {
-        model: Book,
-        attributes: ["id", "title", "accessionNumber", "isbnNo"],
-      },
-    ],
-    order: [["dueDate", "ASC"]], // Sort by due date (earliest first)
-  });
-
-  res.status(200).json({
-    success: true,
-    count: transactions.length,
-    transactions,
-  });
-});
 
 const getOverdueTransactions = asyncHandler(async (req, res) => {
   const overdueTransactions = await BookTransaction.findAll({

@@ -214,6 +214,7 @@
 // -------------just testing data start--------------------------------------------------------------
 const Book = require("../Models/bookModel");
 const Joi = require("joi");
+const { Op } = require("sequelize");
 
 const bookValidationSchema = Joi.object({
   title: Joi.string().trim().required(),
@@ -299,24 +300,61 @@ const createBook = async (req, res) => {
 };
 
 // **Get All Books**
+// const getAllBooks = async (req, res) => {
+//   try {
+//     const books = await Book.findAll();
+
+//     // Format barCodes as comma-separated strings
+//     const formattedBooks = books.map((book) => ({
+//       ...book.toJSON(),
+//       barCodes: book.barCodes.join(", "),
+//     }));
+
+//     sendResponse(res, 200, "Books retrieved successfully", {
+//       Total_Books: books.length,
+//       books: formattedBooks,
+//     });
+//   } catch (error) {
+//     sendResponse(res, 500, "Error fetching books");
+//   }
+
+
+
+// };
+
+
 const getAllBooks = async (req, res) => {
-  try {
-    const books = await Book.findAll();
-
-    // Format barCodes as comma-separated strings
-    const formattedBooks = books.map((book) => ({
-      ...book.toJSON(),
-      barCodes: book.barCodes.join(", "),
-    }));
-
-    sendResponse(res, 200, "Books retrieved successfully", {
-      Total_Books: books.length,
-      books: formattedBooks,
-    });
-  } catch (error) {
-    sendResponse(res, 500, "Error fetching books");
-  }
-};
+    try {
+      const { search } = req.query; // Get search keyword from query params
+  
+      let whereCondition = {};
+  
+      if (search) {
+        whereCondition = {
+          [Op.or]: [
+            { title: { [Op.iLike]: `%${search}%` } },  // Search by title
+            { author: { [Op.iLike]: `%${search}%` } }, // Search by author
+            { isbn: { [Op.iLike]: `%${search}%` } },   // Search by ISBN
+          ],
+        };
+      }
+  
+      const books = await Book.findAll({ where: whereCondition });
+  
+      // Format barCodes as comma-separated strings
+      const formattedBooks = books.map((book) => ({
+        ...book.toJSON(),
+        barCodes: book.barCodes.join(", "),
+      }));
+  
+      sendResponse(res, 200, "Books retrieved successfully", {
+        Total_Books: books.length,
+        books: formattedBooks,
+      });
+    } catch (error) {
+      sendResponse(res, 500, "Error fetching books");
+    }
+  };
 
 // **Get Book by ID**
 const getBookById = async (req, res) => {
