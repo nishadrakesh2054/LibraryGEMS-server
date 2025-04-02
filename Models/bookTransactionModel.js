@@ -63,7 +63,7 @@ const BookTransaction = sequelize.define(
       },
     },
     status: {
-      type: DataTypes.ENUM("issued", "returned", "overdue", "lost"),
+      type: DataTypes.ENUM("issued", "returned", "overdue"),
       defaultValue: "issued",
     },
   },

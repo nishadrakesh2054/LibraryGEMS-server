@@ -55,6 +55,7 @@ const {
   getStudentTransactions,
   getTransactionById,
   getOverdueTransactions,
+  getAllTransactions,
 } = require("../Controllers/bookTransactionController");
 
 const router = express.Router();
@@ -62,17 +63,24 @@ const router = express.Router();
 // Issue a book
 router.post("/issue", issueBook);
 
+
+
 // Return a book
 router.post("/return", returnBook);
+// Get all transactions (with filters)
+
+
+router.get("/transactions", getAllTransactions);
 
 // Get all active transactions
 router.get("/active", getActiveTransactions);
 
-//Get getStudentTransactions for a specific student
-router.get("/student/:studentId", getStudentTransactions);
 
 // Get overdue transactions
 router.get("/overdue", getOverdueTransactions);
+
+//Get getStudentTransactions for a specific student
+router.get("/student/:studentId", getStudentTransactions);
 
 // Get transaction details by ID
 router.get("/:transactionId", getTransactionById);
